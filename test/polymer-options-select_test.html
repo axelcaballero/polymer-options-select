@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../polymer-options-select.html">
+  </head>
+  <body>
+
+    <test-fixture id="polymer-options-select-fixture">
+      <template>
+        <polymer-options-select>
+        </polymer-options-select>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('<polymer-options-select>', () => {
+
+        let myEl;
+
+        setup(() => {
+          myEl = fixture('polymer-options-select-fixture');
+          myEl.events = [
+            {id: 12, name: 'Mother´s Day'},
+            {id: 2, name: 'Memorial Day'},
+            {id: 40, name: 'New Year´s Eve'}
+          ];
+        });
+        test('selectedEvents should be empty by default', () => {
+          assert.equal(myEl.selectedEvents.length, 0);
+        });
+        test('selectedEvents should receive values from clicked items', (done) => {
+          flush(() => {
+            myEl.querySelectorAll('paper-checkbox')[0].click();
+            assert.equal(myEl.selectedEvents.length, 1);
+            done();
+          });
+        });
+      });
+    </script>
+
+  </body>
+</html>
