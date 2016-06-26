@@ -1,0 +1,89 @@
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../polymer/polymer.html"/>
+
+<!--
+`<polymer-options-select>` will let users select and activate options from a list. An array with selected options is saved.
+
+### Styling
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+-----------------|-------------|--------
+`--item-width` | Specifies the width of the paper-checkbox item | 100%
+
+@group UI Elements
+@element polymer-options-select
+@demo demo/index.html
+-->
+
+<dom-module id="polymer-options-select">
+  <style>
+    .flex-wrap {
+      @apply(--layout-horizontal);
+      @apply(--layout-wrap);
+    }
+    paper-checkbox {
+      box-sizing: border-box;
+      margin: 10px;
+      padding: 0 2px;
+      width: var(--item-width,100%);
+      --paper-checkbox-vertical-align: top;
+    }
+  </style>
+
+  <template>
+    <iron-ajax
+      auto
+      url="[[url]]"
+      handle-as="json"
+      last-response="{{events}}">
+    </iron-ajax>
+    <div class="container flex-wrap">
+      <template is="dom-repeat" id="eventsList" items="{{events}}" as="event">
+        <paper-checkbox on-click="_toggleSelection">{{event.name}}</paper-checkbox>
+      </template>
+    </div>
+
+    <array-selector id="selector" items="{{events}}" selected="{{selectedEvents}}" multi toggle></array-selector>
+
+    <p><strong>Currently selected:</strong></p>
+    <ul>
+      <template is="dom-repeat" items="{{selectedEvents}}">
+        <li>
+          <h3><strong>{{item.name}}</strong></h3>
+          <p>Theme: <em>{{item.details}}</em></p>
+        </li>
+      </template>
+    </ul>
+  </template>
+
+  <script>
+  Polymer({
+    is: 'polymer-options-select',
+    properties: {
+      /**  URL of JSON file */
+      url: {
+        type: String,
+        value: ''
+      },
+      /**
+       * stores data about currently selected events
+       * @type {Array.<{id:number, name:string}>}
+       */
+      selectedEvents: {
+        type: Array
+      }
+    },
+    /**
+     * Fires when user clicks on a paper-checkbox item. Updates the value of _selectedEvents
+     * @param {String} e   - clicked element
+     */
+    _toggleSelection(e) {
+      const item = this.$.eventsList.itemForElement(e.target);
+      this.$.selector.select(item);
+    }
+  });
+  </script>
+</dom-module>
